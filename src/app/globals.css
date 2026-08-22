@@ -9,16 +9,16 @@
      grey sitting on navy. */
   /* The dark end of the hero ramp, and the page's base everywhere else — the
      two have to be the same value or the ramp's tail shows as a join. */
-  --bg:#0B1018;
+  --bg:#050D18;
   /* Darkest value on the site. Only the footer uses it — the page ends darker
      than it runs, which is what stops the footer reading as another section. */
-  --foot-dark:#05070C;
+  --foot-dark:#03070E;
   --ink:#EDEFF2;
   /* Lifted from #9398A4. Secondary copy now sits on a lit steel blue rather
      than near-black, and the old value dropped to ~1.6:1 against the bloom. */
   --muted:#A9B0C0;
   --dim:#454D5F;
-  --panel:#0E1420;
+  --panel:#0A1524;
   --line:rgba(237,239,242,.11);
   --accent:#5C74F0;
   /* Same hue, raised in value. The accent is designed for near-black; on the
@@ -40,7 +40,7 @@
   /* Card surface for the work rail. One step up from --panel so the cards read
      as raised off the page rather than cut into it — the rail has no band
      colour behind it, so this is what separates the section from the page. */
-  --tile:#141B28;
+  --tile:#0E1C2E;
 
   --disp:"Anton",sans-serif;
   --ui:"Michroma",sans-serif;
@@ -105,15 +105,15 @@ body.smooth{height:var(--bodyH)}
 .sheen{position:fixed;top:0;left:-10%;right:-10%;height:var(--sheenH,240vh);z-index:0;
   pointer-events:none;will-change:transform;
   background:linear-gradient(180deg,
-      #86B4D6 0vh, #83B2D4 4vh, #7EADD1 8vh,
-      #74A5CB 12vh, #6A9DC5 16vh, #6095BE 20vh,
-      #578CB6 24vh, #4D83AE 28vh, #457BA5 32vh,
-      #3E729C 36vh, #376A93 40vh, #31628A 44vh,
-      #2B5A81 48vh, #265278 52vh, #214A6E 56vh,
-      #1E4365 60vh, #1A3C5B 64vh, #173652 68vh,
-      #143049 72vh, #122B41 76vh, #102539 80vh,
-      #0E2031 84vh, #0D1B29 88vh, #0C1723 92vh,
-      #0C141E 96vh, #0B1018 100vh, rgba(11,16,24,0) 112vh)}
+      #5FA8D8 0vh, #5AA3D4 4vh, #559ECF 8vh,
+      #4F96CA 12vh, #488DC4 16vh, #4085BE 20vh,
+      #397FB8 24vh, #3178B1 28vh, #2B71AA 32vh,
+      #276AA3 36vh, #23639B 40vh, #1F5B93 44vh,
+      #1B548A 48vh, #174D81 52vh, #134777 56vh,
+      #10416E 60vh, #0E3B65 64vh, #0C355B 68vh,
+      #0A2F53 72vh, #092A4A 76vh, #072442 80vh,
+      #061F39 84vh, #051A30 88vh, #051528 92vh,
+      #051121 96vh, #050D18 100vh, rgba(5,13,24,0) 112vh)}
 
 /* ---- 2. the blooms ----
    Fixed to the viewport and never transformed by anything. No scroll input, no
@@ -124,9 +124,9 @@ body.smooth{height:var(--bodyH)}
    like blobs instead of light. */
 .glow{position:fixed;inset:-20%;z-index:0;pointer-events:none;
   background:
-    radial-gradient(58vmax 44vmax at 42% 46%,rgba(24,102,178,.5),rgba(24,102,178,.16) 46%,transparent 76%),
-    radial-gradient(42vmax 34vmax at 92% 78%,rgba(16,112,150,.42),rgba(16,112,150,.13) 44%,transparent 74%),
-    radial-gradient(46vmax 40vmax at 4% 26%,rgba(44,26,92,.42),rgba(44,26,92,.12) 44%,transparent 76%)}
+    radial-gradient(58vmax 44vmax at 42% 46%,rgba(32,120,200,.52),rgba(32,120,200,.17) 46%,transparent 76%),
+    radial-gradient(42vmax 34vmax at 92% 78%,rgba(18,124,170,.44),rgba(18,124,170,.14) 44%,transparent 74%),
+    radial-gradient(46vmax 40vmax at 4% 26%,rgba(38,44,118,.44),rgba(38,44,118,.13) 44%,transparent 76%)}
 /* Barely there. The ramp and the blooms do the work; this only keeps the far
    corners from going flat. Nothing at the top, where the light lives. */
 .vig{position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -421,10 +421,10 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(18px,6vw,90px)}
    that should be darker than the base. */
 .site-foot{padding:clamp(80px,14vh,160px) clamp(18px,6vw,90px) 40px;position:relative;z-index:4;
   background:linear-gradient(180deg,
-    rgba(11,16,24,0) 0,
-    rgba(9,13,20,.72) 22%,
+    rgba(5,13,24,0) 0,
+    rgba(5,12,22,.72) 22%,
     var(--bg) 46%,
-    #080B12 74%,
+    #040A13 74%,
     var(--foot-dark) 100%)}
 .foot-h{font-size:clamp(2.6rem,12vw,11.5rem);color:var(--ink);line-height:1.06;letter-spacing:.012em}
 .foot-contact{opacity:1!important;transform:none!important;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;
