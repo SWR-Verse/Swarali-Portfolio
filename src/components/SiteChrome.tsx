@@ -90,7 +90,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     if (!scroller) return;
 
     function setBodyHeight() {
-      document.documentElement.style.setProperty("--bodyH", scroller!.offsetHeight + "px");
+      const h = scroller!.offsetHeight;
+      document.documentElement.style.setProperty("--bodyH", h + "px");
+      /* The light spans the document, so it has to be re-measured with it. */
+      document.documentElement.style.setProperty("--sheenH", h + "px");
     }
     document.body.classList.add("smooth");
     setBodyHeight();
@@ -121,13 +124,26 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       s.current += (s.target - s.current) * 0.09;
       s.vel = s.current - s.last;
       s.last = s.current;
-      const skew = Math.max(-5, Math.min(5, s.vel * 0.1));
+      /* Sections that must not tilt damp the skew at the source rather than
+         cancelling it on themselves — cancelling leaves their own background
+         edges shearing with the page, which still reads as a tilt. */
+      const damp = Math.max(0, Math.min(1, window.__skewDamp ?? 1));
+      const skew = Math.max(-5, Math.min(5, s.vel * 0.1)) * damp;
       scroller!.style.transform = `translateY(${-s.current}px) skewY(${skew}deg)`;
+      /* Publish what the page is actually painted at this frame. Subscribers
+         doing scroll math must use these — window.scrollY runs ahead of the
+         eased position, and getBoundingClientRect() inside #scroll is skewed
+         by `skew` (a shear moves y by x*tan(skew), which is tens of pixels on
+         a wide element). */
+      window.__scrollFX = { y: s.current, skew };
 
       const max = scroller!.offsetHeight - window.innerHeight;
       if (sheen) {
-        const p = Math.min(1, Math.max(0, s.current / Math.max(1, max)));
-        sheen.style.transform = `translate3d(${Math.sin(s.current / 1100) * 28}px,${(p - 0.5) * 90}px,0)`;
+        /* Exactly -scroll, with no parallax factor. Anything other than 1.0
+           makes the light drift against the page as you move, which reads as
+           the gradient following you. Horizontal drift is kept — it moves
+           across, never with. */
+        sheen.style.transform = `translate3d(${Math.sin(s.current / 1400) * 22}px,${-s.current}px,0)`;
       }
       if (prog) prog.style.width = Math.min(1, s.current / Math.max(1, max)) * 100 + "%";
 
@@ -136,15 +152,18 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       });
 
       const band = document.querySelector(".paperband");
-      if (band) {
-        const r = band.getBoundingClientRect();
-        navEl?.classList.toggle("onlight", r.top < 52 && r.bottom > 52);
-      } else {
-        navEl?.classList.remove("onlight");
-      }
+      const onPaper = band ? (() => { const r = band.getBoundingClientRect(); return r.top < 52 && r.bottom > 52; })() : false;
+      navEl?.classList.toggle("onlight", onPaper);
+
+      /* Is the nav sitting on the light end of the ramp? The ramp is measured in
+         vh, so this is too — 34vh is where it passes the point at which white
+         and dark ink are equally legible on it.
+         Skipped over the paper band, which is opaque and hides the light. */
+      navEl?.classList.toggle("onbright", !onPaper && 52 + s.current < window.innerHeight * 0.34);
 
       checkReveals();
       if (window.__deckTick) window.__deckTick();
+      window.__scrollTicks?.forEach((fn) => fn());
       raf = requestAnimationFrame(tick);
     }
     raf = requestAnimationFrame(tick);
@@ -160,6 +179,9 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   return (
     <>
       <LogoSymbol />
+      {/* Order matters: the blooms sit behind the hero ramp, which is opaque
+          over the hero and transparent below it. */}
+      <div className="glow" />
       <div className="sheen" id="sheen" />
       <div className="vig" />
       <div className="grain" />

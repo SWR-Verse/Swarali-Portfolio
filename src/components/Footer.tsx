@@ -51,16 +51,10 @@ export function Footer({
           swarali.designworks@gmail.com
         </a>
         <div className="socials">
-          <a href="#" target="_blank" rel="noopener">
-            LinkedIn <span>↗</span>
-          </a>
-          <a href="#" target="_blank" rel="noopener">
-            Dribbble <span>↗</span>
-          </a>
-          <a href="#" target="_blank" rel="noopener">
+          <a href="https://www.behance.net/swarali_satpute" target="_blank" rel="noopener noreferrer">
             Behance <span>↗</span>
           </a>
-          <a href="#" target="_blank" rel="noopener">
+          <a href="https://www.instagram.com/swarali.designs" target="_blank" rel="noopener noreferrer">
             Instagram <span>↗</span>
           </a>
         </div>

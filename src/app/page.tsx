@@ -1,6 +1,8 @@
 import TransitionLink from "@/components/TransitionLink";
 import { Band } from "@/components/Band";
 import { Footer } from "@/components/Footer";
+import CreativeBand from "@/components/CreativeBand";
+import WorkRail from "@/components/WorkRail";
 
 export default function HomePage() {
   return (
@@ -87,23 +89,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* THOUGHT */}
-      <section className="thought-sec">
-        <div className="thought rv">
-          <span className="clip">
-            <span>Good design</span>
-          </span>
-          <span className="clip">
-            <span>
-              isn&apos;t <b className="out">generated.</b>
-            </span>
-          </span>
-          <span className="clip">
-            <span className="hl">It&apos;s understood.</span>
-          </span>
-        </div>
-        <div className="thought-by rv">— A thought I design by</div>
-      </section>
+      {/* CREATIVE BAND — full-bleed signature moment: portrait over big type */}
+      <CreativeBand />
 
       {/* EXPERTISE */}
       <section id="expertise">
@@ -142,64 +129,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WORK — paper band */}
-      <section id="work" className="paperband">
-        <div className="head">
-          <h2 className="proj-h rv">
-            <span className="clip">
-              <span>Selected</span>
-            </span>
-            <span className="clip">
-              <span>work.</span>
-            </span>
-          </h2>
-          <div className="eyebrow rv">(03) 2022–2026</div>
-        </div>
-        <div className="grid rv-stg">
-          <div className="card">
-            <div className="frame lead">
-              <div className="word">Nebula</div>
-              <div className="go">↗</div>
-            </div>
-            <div className="meta">
-              <div className="pt">Nebula</div>
-              <div className="cat">Fintech · Dashboard</div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="frame">
-              <div className="word">Pulse</div>
-              <div className="go">↗</div>
-            </div>
-            <div className="meta">
-              <div className="pt">Pulse</div>
-              <div className="cat">Mobile · Health</div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="frame">
-              <div className="word">Atlas</div>
-              <div className="go">↗</div>
-            </div>
-            <div className="meta">
-              <div className="pt">Atlas</div>
-              <div className="cat">SaaS · Realtime</div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="frame">
-              <div className="word">Vela</div>
-              <div className="go">↗</div>
-            </div>
-            <div className="meta">
-              <div className="pt">Vela</div>
-              <div className="cat">Brand · Web</div>
-            </div>
-          </div>
-        </div>
-        <TransitionLink className="allwork rv" href="/work">
-          All projects ↗
-        </TransitionLink>
+      {/* WORK — pinned horizontal rail (see WorkRail.tsx).
+          No band colour at all — this section sits on the page background like
+          About and Expertise do. Every attempt at a distinct surface here (cream,
+          then mist, then a violet dusk) produced the same problem: the page's
+          #sheen drifts behind every section, so a band with its own colour ends
+          up fighting a teal-and-rose wash it can't see. The cards carry the
+          section instead. */}
+      <section id="work">
+        <WorkRail />
       </section>
 
       <Footer
