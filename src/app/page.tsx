@@ -8,37 +8,34 @@ export default function HomePage() {
   return (
     <div className="page" data-page="home">
       {/* HERO */}
+      {/* `hero-fold` is exactly one viewport tall, so the fold lands on the role
+          line and the marquee below it is something you scroll to find. */}
       <section className="hero-home">
-        <div className="hero-top rv">
-          <span>Portfolio © 2026</span>
-          <span>Design with intent</span>
-          <span>Based in India</span>
-        </div>
-        <div className="rv">
-          <h1 className="hero-name clip">
-            <span>
-              Swarali<b className="dot">.</b>
-            </span>
-          </h1>
-        </div>
-        <div className="hero-row rv">
-          <div className="hero-role clip">
-            <span>
-              Product
-              <br />
-              Designer
-            </span>
+        <div className="hero-fold">
+          <div className="hero-top rv">
+            <span>Portfolio © 2026</span>
+            <span>Design with intent</span>
+            <span>Based in India</span>
           </div>
-          <p className="hero-blurb">
-            Some experiences are held. Others are felt.
-            <br />
-            I design both. <b className="star">✦</b>
-          </p>
+          <div className="rv">
+            <h1 className="hero-name clip">
+              <span>
+                Swarali<b className="dot">.</b>
+              </span>
+            </h1>
+          </div>
+          <div className="hero-row rv">
+            <div className="hero-role clip">
+              <span>Product Designer</span>
+            </div>
+            <p className="hero-blurb">
+              Some experiences are held. Others are felt.
+              <br />
+              I design both. <b className="star">✦</b>
+            </p>
+          </div>
         </div>
         <Band words={["Product", "Research", "Strategy", "System", "Impact"]} />
-        <div className="scrollcue">
-          Scroll <span className="arw">↓</span>
-        </div>
       </section>
 
       {/* ABOUT */}

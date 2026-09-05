@@ -81,11 +81,11 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     requestAnimationFrame(revealHero);
   }, [pathname]);
 
-  /* ---------- smooth scroll + sheen drift + progress bar + paperband nav flip + reveals ---------- */
+  /* ---------- smooth scroll + light layers + paperband nav flip + reveals ---------- */
   useEffect(() => {
     const scroller = document.getElementById("scroll");
     const sheen = document.getElementById("sheen");
-    const prog = document.getElementById("progress");
+    const pageglow = document.getElementById("pageglow");
     const navEl = document.getElementById("nav");
     if (!scroller) return;
 
@@ -137,7 +137,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
          a wide element). */
       window.__scrollFX = { y: s.current, skew };
 
-      const max = scroller!.offsetHeight - window.innerHeight;
       if (sheen) {
         /* Exactly -scroll, with no parallax factor. Anything other than 1.0
            makes the light drift against the page as you move, which reads as
@@ -145,7 +144,9 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
            across, never with. */
         sheen.style.transform = `translate3d(${Math.sin(s.current / 1400) * 22}px,${-s.current}px,0)`;
       }
-      if (prog) prog.style.width = Math.min(1, s.current / Math.max(1, max)) * 100 + "%";
+      /* Same -scroll, no drift: the page-long blooms sit at fixed points on the
+         document, so they pass by as you scroll instead of following you. */
+      if (pageglow) pageglow.style.transform = `translate3d(0,${-s.current}px,0)`;
 
       document.querySelectorAll(".band-track").forEach((b) => {
         (b as HTMLElement).style.transform = `translateX(${(-s.current * 0.32) % (b.scrollWidth / 2) - 40}px)`;
@@ -155,11 +156,8 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       const onPaper = band ? (() => { const r = band.getBoundingClientRect(); return r.top < 52 && r.bottom > 52; })() : false;
       navEl?.classList.toggle("onlight", onPaper);
 
-      /* Is the nav sitting on the light end of the ramp? The ramp is measured in
-         vh, so this is too — 34vh is where it passes the point at which white
-         and dark ink are equally legible on it.
-         Skipped over the paper band, which is opaque and hides the light. */
-      navEl?.classList.toggle("onbright", !onPaper && 52 + s.current < window.innerHeight * 0.34);
+      /* No `onbright` any more: the hero is dark again, so the nav's white links
+         read everywhere except over the paper band, which `onlight` covers. */
 
       checkReveals();
       if (window.__deckTick) window.__deckTick();
@@ -179,13 +177,13 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   return (
     <>
       <LogoSymbol />
-      {/* Order matters: the blooms sit behind the hero ramp, which is opaque
-          over the hero and transparent below it. */}
-      <div className="glow" />
+      {/* Order matters: the blooms sit behind the hero light, which paints --bg
+          over the fold and fades out below it. Named `pageglow`, not `glow` —
+          the case study cards already use `.glow` for their own corner light. */}
+      <div className="pageglow" id="pageglow" />
       <div className="sheen" id="sheen" />
       <div className="vig" />
       <div className="grain" />
-      <div className="progress" id="progress" />
 
       <div id="intro">
         <div className="flick" id="flick" />

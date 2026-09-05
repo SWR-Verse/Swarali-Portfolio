@@ -1,6 +1,5 @@
 @import "@fontsource-variable/mona-sans";
 @import "@fontsource/anton";
-@import "@fontsource/michroma";
 
 :root{
   /* ============ DARK MOODY — steel blue, lit from the top ============
@@ -43,7 +42,8 @@
   --tile:#0E1C2E;
 
   --disp:"Anton",sans-serif;
-  --ui:"Michroma",sans-serif;
+  /* Was Michroma. Mona Sans everywhere now — one typeface for all UI text. */
+  --ui:"Mona Sans Variable","Mona Sans",sans-serif;
   --body-font:"Mona Sans Variable","Mona Sans",sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -86,47 +86,113 @@ body.smooth{height:var(--bodyH)}
    Percentage stops after pixel stops is deliberate and safe: on a short page a
    later % can resolve smaller than an earlier px, and the browser clamps it to
    the previous stop rather than misordering the ramp. */
-/* ---- 1. the hero ramp ----
-   Opens on a light *blue*, not a near-white, and reaches --bg by 100vh — so the
-   whole light-to-dark move happens inside the hero banner and the rest of the
-   page is already at its base colour. Measured in vh for exactly that reason:
-   the ramp has to finish with the hero regardless of window height.
+/* ---- 1. the hero light ----
+   A single soft source falling in from one top corner over a base that is
+   otherwise the page's own colour, following the reference: near-black
+   everywhere, one glow, no second light to argue with it.
 
-   Pinned to the document (SiteChrome translates it by exactly -scroll), then
-   transparent past 112vh so the glow layer takes over.
+   The flat part of this layer is exactly --bg, which does two jobs at once. It
+   holds the hero dark, and it hides the page-long glow layer behind it, so the
+   fold shows only the corner light. The vertical mask then fades this whole
+   sheet out over the last third, and the glows below rise through as it goes —
+   nothing changes colour at the hand-off because both sides are already --bg.
 
-   The stops are generated, not hand-picked: a monotone cubic through ten blue
-   anchors, evaluated in linear light every 4vh. Two things that matters for:
-   • interpolating straight from a light tone to near-black passes through
-     *grey* at the midpoint. The anchors hold the hue blue the whole way down.
-   • a dense ramp with a continuous first derivative is what removes Mach
-     banding — the visible "lines" were the ramp changing rate abruptly at
-     sparse, unevenly spaced stops. Largest rate change here is 0.005. */
-.sheen{position:fixed;top:0;left:-10%;right:-10%;height:var(--sheenH,240vh);z-index:0;
+   Pinned to the document (SiteChrome translates it by exactly -scroll), so the
+   light belongs to the hero and scrolls away with it. */
+.sheen{position:fixed;top:0;left:-12%;right:-12%;height:132vh;z-index:0;
   pointer-events:none;will-change:transform;
-  background:linear-gradient(180deg,
-      #5FA8D8 0vh, #5AA3D4 4vh, #559ECF 8vh,
-      #4F96CA 12vh, #488DC4 16vh, #4085BE 20vh,
-      #397FB8 24vh, #3178B1 28vh, #2B71AA 32vh,
-      #276AA3 36vh, #23639B 40vh, #1F5B93 44vh,
-      #1B548A 48vh, #174D81 52vh, #134777 56vh,
-      #10416E 60vh, #0E3B65 64vh, #0C355B 68vh,
-      #0A2F53 72vh, #092A4A 76vh, #072442 80vh,
-      #061F39 84vh, #051A30 88vh, #051528 92vh,
-      #051121 96vh, #050D18 100vh, rgba(5,13,24,0) 112vh)}
+  background:
+    /* ONE inverse vignette, not three pools — and listed first so it
+       composites ON TOP of the light below it.
+       Two things this fixes at once. Order: underneath, dark pools could only
+       darken the base colour, which was already that colour, so they did
+       nothing while the beam ran at full strength across the screen. And shape:
+       three separate pools each have their own falloff to reconcile, whereas a
+       single field anchored on the light's own centre is transparent exactly
+       where the light is and deepens purely with distance from it — so the two
+       can't disagree, and there is no seam anywhere by construction.
+       The stop positions here are the light/dark ratio. Move them, not the
+       beam. */
+    radial-gradient(72% 66% at 101% -5%,
+      transparent 0%,rgba(1,4,10,.03) 24%,rgba(1,4,10,.12) 38%,
+      rgba(1,4,10,.31) 50%,rgba(1,4,10,.53) 62%,rgba(1,4,10,.71) 74%,
+      rgba(1,4,10,.83) 86%,rgba(1,4,10,.89) 100%),
+    /* --- the light: the six-step chain you approved, at its original sizes.
+       Untouched. Shrinking it was my mistake — it made the hero uniformly dim
+       instead of high-contrast, the opposite of the reference. --- */
+    radial-gradient(30% 25% at 101% -3%,
+      rgba(196,230,252,.30),rgba(196,230,252,.14) 30%,rgba(196,230,252,.05) 52%,
+      rgba(196,230,252,.012) 72%,rgba(196,230,252,.002) 88%,transparent 100%),
+    radial-gradient(31% 26% at 91% 7%,
+      rgba(172,216,250,.24),rgba(172,216,250,.115) 30%,rgba(172,216,250,.04) 52%,
+      rgba(172,216,250,.01) 72%,rgba(172,216,250,.002) 88%,transparent 100%),
+    radial-gradient(33% 28% at 79% 18%,
+      rgba(154,206,247,.19),rgba(154,206,247,.09) 30%,rgba(154,206,247,.032) 52%,
+      rgba(154,206,247,.008) 72%,rgba(154,206,247,.002) 88%,transparent 100%),
+    radial-gradient(35% 29% at 66% 30%,
+      rgba(142,197,244,.145),rgba(142,197,244,.07) 30%,rgba(142,197,244,.025) 52%,
+      rgba(142,197,244,.006) 72%,rgba(142,197,244,.001) 88%,transparent 100%),
+    radial-gradient(37% 31% at 53% 42%,
+      rgba(132,190,240,.10),rgba(132,190,240,.048) 30%,rgba(132,190,240,.017) 52%,
+      rgba(132,190,240,.004) 72%,transparent 92%),
+    radial-gradient(39% 32% at 40% 54%,
+      rgba(124,182,235,.06),rgba(124,182,235,.028) 32%,rgba(124,182,235,.009) 56%,
+      rgba(124,182,235,.002) 76%,transparent 94%),
+    linear-gradient(180deg,#050D18 0%,#050D18 100%);
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 64%,rgba(0,0,0,.45) 84%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 0,#000 64%,rgba(0,0,0,.45) 84%,transparent 100%);
+  /* no-repeat matters once the beam below overflows this box: the default is
+     `repeat`, which would tile the fade and cut a band across the overflow. */
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%}
+/* The beam. A radial gradient can't be rotated — its axes are locked to the box
+   — so the angled light is its own element, an ellipse taller than it is wide,
+   turned clockwise so its long axis runs from the top-right corner down toward
+   the name instead of lying flat across the top.
+   Five alpha stops with a long tail: that's what lets it dissolve into the dark
+   rather than ending on a visible rim, which is the whole difficulty with a
+   light this strong. It inherits .sheen's mask, so it fades out with the rest
+   of the layer at the bottom of the hero. */
+/* The beam is built from a CHAIN of soft radials stepping down the diagonal,
+   not from one rotated ellipse. Every rotated-element attempt hit the same
+   wall: a radial is painted inside its element's box, so wherever the gradient
+   still has alpha when it reaches that box, you see the box. `closest-side`
+   fades out before the sides but leaves a visible elliptical rim in open space;
+   `farthest-corner` clears the corners but leaves alpha along the edges — which
+   is the straight diagonal line, the rotated rectangle showing itself.
+   A chain has no box of its own to betray. Six overlapping circles walking from
+   off the top-right corner down toward the name, each fading to nothing well
+   inside the layer, their union reading as one elongated beam at 29 degrees.
+   They live in .sheen's own background, whose edges sit 12vw off-screen on
+   both sides, so nothing can clip anywhere you can see. */
 
 /* ---- 2. the blooms ----
-   Fixed to the viewport and never transformed by anything. No scroll input, no
-   hover, no animation — they simply exist behind the page, so the blue is
-   present on every screen rather than passing by once.
-   Sized in vmax with soft falloffs: a radial whose stop sits too close to its
-   centre reads as a hard-edged patch, which is what made the earlier ones look
-   like blobs instead of light. */
-.glow{position:fixed;inset:-20%;z-index:0;pointer-events:none;
+   Pinned to the document like the hero light, not to the viewport, so they sit
+   at fixed points on the page and pass by as you scroll rather than following
+   you down it.
+
+   Blue and warm alternating, well separated, and enormous — radii in vmax so
+   they stay screen-scaled however long the page gets, positions in percent so
+   they spread across it. Each has three alpha stops and a long tail: a radial
+   that runs straight to `transparent` puts all its change at the edge, which is
+   what makes one read as a patch instead of as light. */
+.pageglow{position:fixed;top:0;left:-12%;right:-12%;height:var(--sheenH,300vh);z-index:0;
+  pointer-events:none;will-change:transform;
   background:
-    radial-gradient(58vmax 44vmax at 42% 46%,rgba(32,120,200,.52),rgba(32,120,200,.17) 46%,transparent 76%),
-    radial-gradient(42vmax 34vmax at 92% 78%,rgba(18,124,170,.44),rgba(18,124,170,.14) 44%,transparent 74%),
-    radial-gradient(46vmax 40vmax at 4% 26%,rgba(38,44,118,.44),rgba(38,44,118,.13) 44%,transparent 76%)}
+    radial-gradient(66vmax 46vmax at 14% 30%,
+      rgba(48,118,196,.24),rgba(48,118,196,.09) 40%,rgba(48,118,196,.02) 66%,transparent 86%),
+    radial-gradient(70vmax 48vmax at 26% 55%,
+      rgba(58,130,204,.22),rgba(58,130,204,.08) 42%,rgba(58,130,204,.02) 68%,transparent 88%),
+    radial-gradient(52vmax 38vmax at 80% 66%,
+      rgba(222,146,132,.16),rgba(222,146,132,.06) 44%,transparent 88%),
+    radial-gradient(64vmax 44vmax at 22% 80%,
+      rgba(64,124,198,.20),rgba(64,124,198,.08) 42%,transparent 88%),
+    /* the footer pair — blue left, warm right */
+    radial-gradient(58vmax 34vmax at 14% 94%,
+      rgba(56,124,200,.30),rgba(56,124,200,.11) 42%,transparent 84%),
+    radial-gradient(50vmax 30vmax at 86% 99%,
+      rgba(230,146,110,.28),rgba(230,146,110,.10) 44%,transparent 86%)}
+
 /* Barely there. The ramp and the blooms do the work; this only keeps the far
    corners from going flat. Nothing at the top, where the light lives. */
 .vig{position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -136,7 +202,6 @@ body.smooth{height:var(--bodyH)}
    gradient over 1600px without stepping; a little noise breaks the steps up. */
 .grain{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.07;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:9999;background:var(--accent)}
 
 #intro{position:fixed;inset:0;z-index:9997;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}
 #intro .flick{font-family:var(--disp);text-transform:uppercase;font-size:clamp(2.4rem,11vw,9rem);color:var(--ink);text-align:center;line-height:.9}
@@ -166,18 +231,6 @@ body.smooth{height:var(--bodyH)}
 nav{position:fixed;top:0;left:0;width:100%;z-index:9000;display:flex;justify-content:space-between;
   align-items:center;padding:24px clamp(18px,5vw,54px);opacity:0;transition:opacity .6s,color .35s;color:var(--ink)}
 nav.on{opacity:1}
-/* The nav now spends the first few screens sitting on the pale end of the
-   gradient, where white links vanish. `onbright` is toggled from the same
-   scroll maths that positions the light, so the flip happens exactly where the
-   field crosses over rather than at a guessed scroll offset.
-   Ordered before `onlight` so the paper band — which is opaque and hides the
-   gradient entirely — always wins. */
-nav.onbright{color:#0D1524}
-/* No scrim at all here. A pale scrim over an already pale field ends at a hard
-   line ~105px down — that band across the top of the hero was this, not the
-   gradient. Dark ink on the light end runs about 9:1 unaided, so there is
-   nothing for a scrim to fix. */
-nav.onbright::before{background:none}
 nav.onlight{color:var(--paper-ink)}
 /* Legibility scrim behind the nav. It was 210% of the nav's height, which put
    its tail ~147px down the page — far enough to wash the top of any heading
@@ -193,7 +246,7 @@ nav::before{content:"";position:absolute;left:0;right:0;top:0;height:150%;z-inde
 nav.onlight::before{background:linear-gradient(180deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 60%,transparent) 42%,transparent 100%)}
 .logo{display:block;width:auto;height:22px;fill:currentColor;stroke:currentColor}
 .nlinks{display:flex;gap:clamp(16px,2.4vw,30px)}
-.nlinks a{font-family:var(--ui);font-size:.56rem;text-transform:uppercase;letter-spacing:.1em;
+.nlinks a{font-family:var(--ui);font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;
   position:relative;padding:4px 0;opacity:.72;transition:opacity .3s}
 .nlinks a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:currentColor;transition:width .3s}
 .nlinks a:hover{opacity:1}
@@ -212,16 +265,51 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(18px,6vw,90px)}
 .clip>span{display:block;transform:translateY(102%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
 .show .clip>span{transform:none}
 
-.hero-home{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:130px;padding-bottom:0}
-/* Dark ink, not muted grey. This row sits at the pale end of the gradient where
-   --muted falls to about 1.4:1 — it's the one place on the site where secondary
-   copy is on a light field. */
-.hero-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;color:rgba(12,20,32,.74);
-  font-weight:600;text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;margin-bottom:32px}
+.hero-home{display:block;padding-top:0;padding-bottom:clamp(50px,9vh,110px)}
+/* Exactly one viewport, so the fold falls on the role line. The marquee lives
+   outside this box and is therefore always below the fold — it's something you
+   scroll to find rather than a strip crowding the bottom of the first screen. */
+.hero-fold{position:relative;min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding-top:130px}
+/* Faded grid, hero only. Two repeating gradients — a fine cell and a heavier
+   one every fourth line — then masked so it's strongest where the light is and
+   gone before the fold ends. Without the mask a grid this large reads as graph
+   paper; with it, it reads as structure under the light.
+   Sits at z-index -1 so it stays behind the type without needing a stacking
+   context on every child. #scroll is already a stacking context, so it can't
+   fall behind the page's own background layers. */
+/* Full-bleed: the negative inline inset cancels the section's own horizontal
+   padding, so the grid runs to both screen edges instead of stopping where the
+   text column does.
+   One grid, not two. The reference is a single even lattice — the major/minor
+   pair read as graph paper, which is a different thing entirely. */
+.hero-fold::before{content:"";position:absolute;top:0;bottom:0;
+  left:calc(-1 * clamp(18px,6vw,90px));right:calc(-1 * clamp(18px,6vw,90px));
+  z-index:-1;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(90deg,rgba(237,239,242,.10) 0 1px,transparent 1px 62px),
+    repeating-linear-gradient(0deg,rgba(237,239,242,.10) 0 1px,transparent 1px 62px);
+  /* One radial mask centred on the beam does both jobs at once: the lattice is
+     brightest where the light falls and fades with distance from it — so the
+     dark top-left and bottom-right corners get a faint grid rather than the
+     same one as the lit areas — and because the bottom of the fold is far from
+     a source near the top, it also thins out down there without needing a
+     second vertical fade. Lines never reach zero until the outer edge, so the
+     grid stays continuous instead of vanishing in patches. */
+  -webkit-mask-image:radial-gradient(155% 125% at 76% 4%,#000 0%,rgba(0,0,0,.82) 26%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.26) 72%,rgba(0,0,0,.1) 88%,transparent 100%);
+  mask-image:radial-gradient(155% 125% at 76% 4%,#000 0%,rgba(0,0,0,.82) 26%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.26) 72%,rgba(0,0,0,.1) 88%,transparent 100%)}
+.hero-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;color:var(--muted);
+  font-weight:500;text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;margin-bottom:32px}
 .hero-name{font-size:clamp(4.5rem,26vw,24rem);color:var(--ink)}
 .hero-name .dot{color:var(--accent-lite)}
 .hero-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-top:10px}
-.hero-role{font-family:var(--disp);font-size:clamp(1.4rem,4vw,2.6rem);text-transform:uppercase;color:var(--accent-lite);line-height:.95;letter-spacing:.005em}
+/* One line now, so it's sized off width rather than stacked. `nowrap` is the
+   point of the change — without it this wraps back to two lines the moment the
+   window narrows, which is the layout it just came from. */
+/* One line, so it's sized off width. `nowrap` is the point — without it this
+   wraps back to two lines the moment the window narrows. */
+.hero-role{font-family:var(--disp);font-size:clamp(1.1rem,2.9vw,2.3rem);text-transform:uppercase;
+  color:var(--accent-lite);line-height:.95;letter-spacing:.005em;white-space:nowrap}
 .hero-blurb{max-width:420px;color:var(--muted);font-size:1.02rem;line-height:1.65}
 .hero-blurb .star{color:var(--accent-lite);font-weight:400;font-size:1.15em;line-height:1}
 .band{margin-top:clamp(30px,4.5vh,54px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
@@ -233,11 +321,29 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(18px,6vw,90px)}
   font-size:clamp(.72rem,1.45vw,1rem);color:var(--muted)}
 .band-track span{padding:0 .15em}
 .band-track em{font-style:normal;color:var(--accent);padding:0 1.5em;font-size:.92em;letter-spacing:0}
+/* Still used by /about — only the home hero dropped it. */
 .scrollcue{position:absolute;right:clamp(18px,6vw,90px);bottom:34px;color:var(--muted);
   font-weight:500;text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;display:flex;align-items:center;gap:10px}
 .scrollcue .arw{animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
+/* ---- per-section glows ----
+   Attached to the sections themselves rather than placed by percentage on the
+   page-long layer, so they stay put when section heights change.
+
+   Every one of these is inset *negatively* — a radial only paints inside its
+   own box, so a glow centred near an edge would be sliced off square at the
+   section boundary. Extending the box past the section gives the falloff room
+   to finish. z-index:-1 keeps them behind the type; the sections have no
+   background of their own, so nothing hides them. */
+#about::before{content:"";position:absolute;inset:-25vh -45vw;z-index:-1;pointer-events:none;
+  /* Radii in PERCENT of this box, not vmax, and chosen so the falloff finishes
+     inside it: centred at 48% with a 38% vertical radius, the last stop lands
+     around 15% and 81% — both well clear of the edges. A vmax radius doesn't
+     know how big the box is, so it ran past the top edge and got sliced there,
+     drawing a horizontal line across the hero above. That was the line. */
+  background:radial-gradient(46% 38% at 74% 48%,
+    rgba(232,152,112,.34),rgba(232,152,112,.13) 40%,rgba(232,152,112,.03) 66%,transparent 86%)}
 .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:end}
 @media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:40px}}
 .about-h{font-size:clamp(2.4rem,7vw,6rem);color:var(--ink)}
@@ -420,12 +526,18 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(18px,6vw,90px)}
    at it. --foot-dark is deliberately below --bg: the footer is the one place
    that should be darker than the base. */
 .site-foot{padding:clamp(80px,14vh,160px) clamp(18px,6vw,90px) 40px;position:relative;z-index:4;
+  /* Translucent all the way down, so the page-long glow layer reads through it.
+     The footer's glows deliberately do NOT live here: a radial centred near an
+     edge of its own box gets sliced off square at that edge, and inside the
+     footer every edge is close by — that was the straight line appearing under
+     the warm glow. Put on the page layer instead, they have no boundary to cut
+     against. This gradient only supplies the darkening. */
   background:linear-gradient(180deg,
     rgba(5,13,24,0) 0,
-    rgba(5,12,22,.72) 22%,
-    var(--bg) 46%,
-    #040A13 74%,
-    var(--foot-dark) 100%)}
+    rgba(5,12,22,.6) 22%,
+    rgba(5,13,24,.86) 46%,
+    rgba(4,10,19,.9) 74%,
+    rgba(3,7,14,.94) 100%)}
 .foot-h{font-size:clamp(2.6rem,12vw,11.5rem);color:var(--ink);line-height:1.06;letter-spacing:.012em}
 .foot-contact{opacity:1!important;transform:none!important;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;
   gap:34px;margin-top:clamp(44px,6vh,72px);padding-bottom:clamp(34px,5vh,56px);border-bottom:1px solid var(--line)}
@@ -702,7 +814,7 @@ form.gone{display:none}
 .cs-cover::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:26%;pointer-events:none;
   background:linear-gradient(to bottom,transparent,var(--bg))}
 
-/* --- micro label (Michroma, sparing) --- */
+/* --- micro label --- */
 .cs-lbl{font-family:var(--ui);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .cs-slabel{display:flex;align-items:center;gap:14px;margin-bottom:34px;
   font-family:var(--ui);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
@@ -984,6 +1096,19 @@ form.gone{display:none}
    with rgba instead of replacing, so the sheen carries straight through and
    there is no edge to see. */
 .creative{padding:0;position:relative;z-index:3}
+/* A closing rule. The figure dissolves into the backdrop by design, which reads
+   as the section having no end at all — this gives the eye a floor to land on.
+
+   Deliberately NOT `var(--line)`. That neutral hairline is what separates the
+   rows in Expertise directly below, and at the same value this read as a third
+   row divider rather than as the end of something. Tinting it toward the iris
+   accent and dropping the peak below --line's own alpha makes it a horizon:
+   present enough to close the section, too faint and too blue to be mistaken
+   for structure. */
+.creative::after{content:"";position:absolute;left:clamp(18px,6vw,90px);right:clamp(18px,6vw,90px);
+  bottom:0;height:1px;z-index:5;pointer-events:none;
+  background:linear-gradient(90deg,
+    transparent 0,rgba(124,152,236,.07) 24%,rgba(140,166,255,.15) 50%,rgba(124,152,236,.07) 76%,transparent 100%)}
 /* Height is driven by the viewport, NOT by aspect-ratio. An earlier version
    used `aspect-ratio:16/9` capped by `max-height:100vh`, which silently broke
    the ratio on any window wider than 16:9 — the box went to ~2.13:1 and
@@ -1029,6 +1154,9 @@ form.gone{display:none}
    the edges. Reintroduce any opaque stop and the seams come back. */
 .cr-bg{position:absolute;inset:0;z-index:0;
   background:
+    /* Warm, low right — the counterweight to the blue already behind her. It's
+       listed first so it sits above the darkening pool rather than under it. */
+    radial-gradient(40% 34% at 84% 72%,rgba(234,150,110,.30),rgba(234,150,110,.11) 40%,transparent 76%),
     radial-gradient(58% 46% at 50% 26%,rgba(92,116,240,.17),transparent 70%),
     radial-gradient(46% 40% at 50% 54%,rgba(186,172,152,.09),transparent 72%),
     radial-gradient(96% 80% at 50% 50%,rgba(8,9,12,.93) 0%,rgba(8,9,12,.86) 40%,rgba(8,9,12,.55) 66%,transparent 84%);
