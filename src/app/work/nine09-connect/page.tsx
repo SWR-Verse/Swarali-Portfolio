@@ -492,8 +492,6 @@ export default function Nine09CasePage() {
       </CaseZoom>
 
       <Footer
-        eyebrowNo="09"
-        eyebrowLabel="Elsewhere"
         links={[
           { href: "/", label: "Home" },
           { href: "/work", label: "Work" },

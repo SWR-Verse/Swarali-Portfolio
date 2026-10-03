@@ -3,13 +3,9 @@ import TransitionLink from "./TransitionLink";
 type FootLink = { href: string; label: string; internal?: boolean };
 
 export function Footer({
-  eyebrowNo,
-  eyebrowLabel = "Let's talk",
   links,
   next,
 }: {
-  eyebrowNo: string;
-  eyebrowLabel?: string;
   links: FootLink[];
   next?: { lines: [string, string]; ctaLabel: string; ctaHref: string };
 }) {
@@ -30,19 +26,16 @@ export function Footer({
           </TransitionLink>
         </div>
       )}
-      <div className="eyebrow rv" style={next ? { marginTop: "clamp(60px,9vh,110px)" } : undefined}>
-        ({eyebrowNo}) {eyebrowLabel}
-      </div>
-      <h2 className="foot-h rv">
+      <h2 className="foot-h rv" style={next ? { marginTop: "clamp(60px,9vh,110px)" } : undefined}>
         <span className="clip">
-          <span>Let&apos;s</span>
+          <span>So&hellip;</span>
         </span>
         <span className="clip">
-          <span>make</span>
+          <span>what are we</span>
         </span>
         <span className="clip">
           <span>
-            <a href="mailto:swarali.designworks@gmail.com">something↗</a>
+            <a href="mailto:swarali.designworks@gmail.com">making?</a>
           </span>
         </span>
       </h2>
@@ -60,6 +53,8 @@ export function Footer({
         </div>
       </div>
       <div className="foot-row rv">
+        {/* Copyright hard left, links hard right, on one shared baseline. */}
+        <div className="foot-note">© 2026 Swarali — Product Designer</div>
         <div className="foot-links">
           {links.map((l) =>
             l.internal === false ? (
@@ -73,7 +68,6 @@ export function Footer({
             )
           )}
         </div>
-        <div className="foot-note">© 2026 Swarali — Product Designer</div>
       </div>
     </footer>
   );

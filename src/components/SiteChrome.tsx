@@ -19,6 +19,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const isFirstPathname = useRef(true);
   const scrollState = useRef({ target: 0, current: 0, last: 0, vel: 0 });
+  /* Accumulated upward travel since the last downward move — see the nav
+     retraction in tick(). A counter rather than a boolean so one stray notch
+     can't toggle it. */
+  const navUp = useRef(0);
 
   /* ---------- first paint: intro (home only, once per session) or a quick curtain reveal ---------- */
   useEffect(() => {
@@ -104,9 +108,26 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     const settleTimer = setTimeout(setBodyHeight, 1500);
 
     function checkReveals() {
+      /* ---- the bottom sweep ----
+         The trigger line is 86% down the viewport, and an element that has not
+         revealed yet is sitting 70px BELOW where it will end up, because that
+         translate is what the reveal removes. For anything near the foot of the
+         document those two facts deadlock: the footer's own row lands at ~86%
+         of the viewport when you are scrolled as far as the page goes, the
+         pending translate pushes it past the line, and there is no scroll left
+         to bring it back — so it stayed invisible for good. That is why About /
+         Work / Contact and the copyright never appeared.
+
+         Anything still hidden once the page is scrolled out is, by definition,
+         as visible as it is ever going to get, so reveal it. Checked against
+         the real scroll position rather than the eased one: this is a question
+         about the document, not about where the animation currently is. */
+      const atBottom =
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+
       document.querySelectorAll(".rv:not(.show), .rv-stg:not(.show)").forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.top < window.innerHeight * 0.86 && r.bottom > 0) {
+        if (atBottom || (r.top < window.innerHeight * 0.86 && r.bottom > 0)) {
           el.classList.add("show");
           if (el.classList.contains("rv-stg")) {
             [...el.children].forEach((c, i) => {
@@ -155,6 +176,33 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       const band = document.querySelector(".paperband");
       const onPaper = band ? (() => { const r = band.getBoundingClientRect(); return r.top < 52 && r.bottom > 52; })() : false;
       navEl?.classList.toggle("onlight", onPaper);
+
+      /* ---- the nav retracts past the hero ----
+         It is fixed, so below the fold it sat on top of whatever heading
+         happened to be at the top of the viewport — the logo landing inside
+         SELECTED WORK or MY EXPERTISE, two pieces of display type competing at
+         the same point on screen with nothing to say which one you were meant
+         to read.
+
+         Over the hero it stays put: that is the one screen with room for it,
+         and it is where someone first looks for navigation. Past the hero it
+         leaves, and comes back the moment you scroll up — which is when a
+         person is looking for a way out of the page. Hiding it outright would
+         mean the only route to About or Work is to scroll all the way back to
+         the top.
+
+         The 24px dead zone on the upward gesture stops a single wheel notch,
+         or the rubber-band at the end of a trackpad flick, from flashing the
+         nav back in. */
+      const heroH = document.querySelector("main section")?.clientHeight ?? window.innerHeight;
+      if (s.current < heroH - 80) {
+        navUp.current = 0;
+      } else if (s.vel < -0.4) {
+        navUp.current += -s.vel;
+      } else if (s.vel > 0.4) {
+        navUp.current = 0;
+      }
+      navEl?.classList.toggle("hid", s.current >= heroH - 80 && navUp.current < 24);
 
       /* No `onbright` any more: the hero is dark again, so the nav's white links
          read everywhere except over the paper band, which `onlight` covers. */

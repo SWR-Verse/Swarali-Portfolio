@@ -1,4 +1,3 @@
-import TransitionLink from "@/components/TransitionLink";
 import { Band } from "@/components/Band";
 import { Footer } from "@/components/Footer";
 import CreativeBand from "@/components/CreativeBand";
@@ -38,52 +37,14 @@ export default function HomePage() {
         <Band words={["Product", "Research", "Strategy", "System", "Impact"]} />
       </section>
 
-      {/* ABOUT */}
-      <section id="about">
-        <div className="eyebrow rv">(01) About me</div>
-        <div className="about-grid">
-          <h2 className="about-h rv">
-            <span className="clip">
-              <span>I design.</span>
-            </span>
-            <span className="clip">
-              <span>Because good</span>
-            </span>
-            <span className="clip">
-              <span>design is</span>
-            </span>
-            <span className="clip">
-              <span>still human.</span>
-            </span>
-          </h2>
-          <div className="about-side rv">
-            <p>
-              I don&apos;t believe design begins with a screen, a prompt, or a tool. It begins with{" "}
-              <b>understanding people.</b>
-            </p>
-            <p>
-              Every decision I make is intentional. From the first question to the final interaction,{" "}
-              <b>design isn&apos;t what you make, it&apos;s how you think.</b>
-            </p>
-            <div className="values">
-              <div>
-                <div className="k">Curiosity</div>
-                <div className="v">Ask why first</div>
-              </div>
-              <div>
-                <div className="k">Clarity</div>
-                <div className="v">Simplify complexity</div>
-              </div>
-              <div>
-                <div className="k">Craft</div>
-                <div className="v">Refine relentlessly</div>
-              </div>
-            </div>
-            <TransitionLink className="more" href="/about">
-              More about me ↗
-            </TransitionLink>
-          </div>
-        </div>
+      {/* WORK — four case-study cards (see WorkRail.tsx).
+          No band colour at all — this section sits on the page background. Every
+          attempt at a distinct surface here (cream, then mist, then a violet
+          dusk) produced the same problem: the page's #sheen drifts behind every
+          section, so a band with its own colour ends up fighting a teal-and-rose
+          wash it can't see. The cards carry the section instead. */}
+      <section id="work">
+        <WorkRail />
       </section>
 
       {/* CREATIVE BAND — full-bleed signature moment: portrait over big type */}
@@ -91,7 +52,13 @@ export default function HomePage() {
 
       {/* EXPERTISE */}
       <section id="expertise">
-        <div className="eyebrow rv">(02) Expertise</div>
+        <div className="exp-head">
+          <h2 className="proj-h rv">
+            <span className="clip">
+              <span>My expertise.</span>
+            </span>
+          </h2>
+        </div>
         <div className="exp-list rv-stg">
           <div className="exp">
             <div className="no">01</div>
@@ -126,23 +93,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WORK — pinned horizontal rail (see WorkRail.tsx).
-          No band colour at all — this section sits on the page background like
-          About and Expertise do. Every attempt at a distinct surface here (cream,
-          then mist, then a violet dusk) produced the same problem: the page's
-          #sheen drifts behind every section, so a band with its own colour ends
-          up fighting a teal-and-rose wash it can't see. The cards carry the
-          section instead. */}
-      <section id="work">
-        <WorkRail />
-      </section>
-
       <Footer
-        eyebrowNo="04"
         links={[
           { href: "/about", label: "About" },
           { href: "/work", label: "Work" },
-          { href: "mailto:swarali.designworks@gmail.com", label: "Email", internal: false },
+          { href: "/contact", label: "Contact" },
         ]}
       />
     </div>

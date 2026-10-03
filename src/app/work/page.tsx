@@ -12,7 +12,7 @@ export default function WorkPage() {
       {/* HERO */}
       <section className="hero-work">
         <div className="hero-top rv">
-          <span>Work — 2020–2026</span>
+          <span>Portfolio © 2026</span>
           <span>Design with intent</span>
           <span>Based in India</span>
         </div>
@@ -41,7 +41,6 @@ export default function WorkPage() {
 
       {/* 01 — SCREEN WORK */}
       <section id="screen">
-        <div className="eyebrow rv">(01) On the screen</div>
         <div className="chap">
           <h2 className="rv">
             <span className="clip">
@@ -58,7 +57,6 @@ export default function WorkPage() {
 
       {/* 02 — PHYSICAL WORK, paper band */}
       <section id="objects" className="paperband">
-        <div className="eyebrow rv">(02) In the hand</div>
         <div className="chap">
           <h2 className="rv">
             <span className="clip">
@@ -136,7 +134,6 @@ export default function WorkPage() {
 
       {/* 03 — SKETCHBOOK */}
       <section id="sketch">
-        <div className="eyebrow rv">(03) On paper</div>
         <div className="chap">
           <h2 className="rv">
             <span className="clip">
@@ -156,8 +153,6 @@ export default function WorkPage() {
       </section>
 
       <Footer
-        eyebrowNo="04"
-        eyebrowLabel="Elsewhere"
         links={[
           { href: "/", label: "Home" },
           { href: "/about", label: "About" },

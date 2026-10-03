@@ -10,7 +10,7 @@ export default function ContactPage() {
       {/* HERO */}
       <section className="hero-contact">
         <div className="hero-top rv">
-          <span>Contact — 2026</span>
+          <span>Portfolio © 2026</span>
           <span>Design with intent</span>
           <span>Based in India</span>
         </div>
@@ -39,7 +39,6 @@ export default function ContactPage() {
 
       {/* FORM — paper band */}
       <section id="form" className="paperband">
-        <div className="eyebrow rv">(01) The form</div>
         <div className="form-wrap">
           <div className="form-aside rv">
             <h2>
@@ -66,8 +65,6 @@ export default function ContactPage() {
       </section>
 
       <Footer
-        eyebrowNo="02"
-        eyebrowLabel="Elsewhere"
         links={[
           { href: "/", label: "Home" },
           { href: "/about", label: "About" },
