@@ -73,7 +73,7 @@ export default function WorkRail() {
          out and back rather than snapping on at a threshold. */
       const cover =
         Math.max(0, Math.min(vh, rel + wrap!.offsetHeight) - Math.max(0, rel)) / vh;
-      window.__skewDamp = 1 - Math.max(0, Math.min(1, cover));
+      window.__skewDamp = Math.min(window.__skewDamp ?? 1, 1 - Math.max(0, Math.min(1, cover)));
     }
 
     tick();

@@ -88,7 +88,7 @@ export default function ContactForm() {
             <textarea
               id="message"
               name="message"
-              placeholder="What are you building, and what's the part that's bugging you?"
+              placeholder="What's on your mind?"
               onChange={() => setErrors((s) => ({ ...s, message: false }))}
             />
             <div className="msg">Even one line is fine — but there should be one.</div>
@@ -98,7 +98,7 @@ export default function ContactForm() {
         <button className="submit" type="submit">
           Send it <span>↗</span>
         </button>
-        <p className="tinynote">No newsletter, no follow-up sequence, no &quot;just circling back.&quot; One human, one reply.</p>
+        <p className="tinynote">I&rsquo;ll get back to you soon. Pinky promise.</p>
       </form>
 
       <div className={`sent${sent ? " on" : ""}`} id="sent">

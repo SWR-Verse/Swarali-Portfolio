@@ -2,6 +2,7 @@ import { Band } from "@/components/Band";
 import { Footer } from "@/components/Footer";
 import CreativeBand from "@/components/CreativeBand";
 import WorkRail from "@/components/WorkRail";
+import HeroGrid from "@/components/HeroGrid";
 
 export default function HomePage() {
   return (
@@ -11,6 +12,7 @@ export default function HomePage() {
           line and the marquee below it is something you scroll to find. */}
       <section className="hero-home">
         <div className="hero-fold">
+          <HeroGrid />
           <div className="hero-top rv">
             <span>Portfolio © 2026</span>
             <span>Design with intent</span>

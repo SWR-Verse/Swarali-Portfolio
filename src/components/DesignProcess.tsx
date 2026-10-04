@@ -1,22 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { layoutTop, onScrollTick, scrollFX } from "@/lib/scrollfx";
 
 /**
  * "My design process" — one viewport, seven steps, one shape.
  *
  * A raw square at step 01 is refined, step by step, into a perfect circle at
- * step 07: the shape *is* the process. Progress is a continuous 0–1 value, so
- * scrubbing morphs the shape smoothly; it snaps to a step on release.
+ * step 07: the shape *is* the process.
  *
- * Interaction (the combination that tested best for UX):
- *  - plays itself once when the section first comes into view
- *  - the first touch / drag / key press takes control and stops the autoplay
- *  - drag the shape or the bar to scrub, click a step to jump, ←/→ to step
- *  - prefers-reduced-motion: no autoplay, no tweening — steps just change
- *
- * All per-frame work writes straight to styles through refs; React state only
- * holds the current step index, so the copy re-renders seven times at most.
+ * Driven by scroll: the section pins for a few screens and scrolling moves
+ * through the steps. Each step holds for a beat (so the copy can be read) and
+ * then morphs into the next. Clicking a step on the bar scrolls the page to
+ * that step. Pinning is done by hand because #scroll is moved with transforms
+ * (see src/lib/scrollfx.ts), the same way ThoughtScroll pins.
  */
 
 const STEPS = [
@@ -35,10 +32,24 @@ const STEPS = [
   { name: "Finalize", tag: "Making every choice feel intentional." },
 ] as const;
 
-const DWELL = 2800; // ms each step is held while autoplaying
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const bump = (x: number, c: number, w: number) => clamp(1 - Math.abs(x - c) / w);
 const pad = (n: number) => `0${n + 1}`;
+const smooth = (t: number) => t * t * (3 - 2 * t);
+
+/* Scroll progress (0–1) → step position (0–6). Each step holds for a while
+   and the morph happens in between; the first and last steps get a little
+   extra room so you land on them comfortably. */
+const RAMP = 6.6;
+const LEAD = 0.3;
+const toPos = (p: number) => {
+  const raw = clamp(p * RAMP - LEAD, 0, 6);
+  const k = Math.min(5, Math.floor(raw));
+  const f = raw - k;
+  return k + smooth(clamp((f - 0.3) / 0.4));
+};
+/** Inverse, for jumping: the scroll progress at the middle of step j's hold. */
+const holdOf = (j: number) => clamp((j + LEAD) / RAMP);
 
 export default function DesignProcess() {
   const [k, setK] = useState(0);
@@ -53,20 +64,8 @@ export default function DesignProcess() {
   const fill = useRef<HTMLDivElement>(null);
   const mk = useRef<HTMLDivElement>(null);
 
-  const s = useRef({
-    p: 0,
-    k: 0,
-    anim: 0,
-    moving: false,
-    dragging: false,
-    target: -1,
-    chase: false,
-    tp: 0,
-    auto: true,
-    visible: false,
-    dwell: 0,
-    reduced: false,
-  });
+  const wrap = useRef<HTMLDivElement>(null);
+  const s = useRef({ p: 0, k: 0 });
 
   /** Writes every visual that depends on progress. `p` is 0–1. */
   const paint = useCallback((p: number) => {
@@ -94,139 +93,61 @@ export default function DesignProcess() {
     }
   }, []);
 
-  const animateTo = useCallback(
-    (target: number, dur = 650) => {
-      const st = s.current;
-      cancelAnimationFrame(st.anim);
-      st.chase = false;
-      if (st.reduced) {
-        st.moving = false;
-        st.dwell = 0;
-        paint(target);
-        return;
-      }
-      const from = st.p;
-      const t0 = performance.now();
-      st.moving = true;
-      const f = (n: number) => {
-        const u = clamp((n - t0) / dur);
-        const e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-        paint(from + (target - from) * e);
-        if (u < 1) st.anim = requestAnimationFrame(f);
-        else {
-          st.moving = false;
-          st.dwell = 0;
-        }
-      };
-      st.anim = requestAnimationFrame(f);
-    },
-    [paint],
-  );
-
-  const goTo = useCallback(
-    (j: number) => {
-      s.current.target = clamp(j, 0, 6);
-      animateTo(clamp(j, 0, 6) / 6);
-    },
-    [animateTo],
-  );
-
-  /** First touch takes control from the autoplay. */
-  const takeOver = () => {
-    const st = s.current;
-    st.auto = false;
-    cancelAnimationFrame(st.anim);
-    st.chase = false;
-    st.moving = false;
-  };
-
-  /** Hover scrub: moving the mouse along the bar lands on the nearest step. */
-  const hover = (e: React.PointerEvent<HTMLElement>) => {
-    if (e.pointerType !== "mouse") return;
-    const r = bar.current?.getBoundingClientRect();
-    if (!r) return;
-    const j = Math.round(clamp((e.clientX - r.left) / r.width) * 6);
-    const st = s.current;
-    if (j === st.target) return;
-    st.target = j;
-    takeOver();
-    if (st.reduced) {
-      paint(j / 6);
-      return;
-    }
-    /* Chase, don't tween: restarting an eased tween on every step the cursor
-       crosses made each restart begin slowly, so a quick sweep lagged behind.
-       Exponential smoothing toward the latest target keeps up with any speed. */
-    st.tp = j / 6;
-    st.chase = true;
-    st.moving = true;
-  };
-
-  const key = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-      e.preventDefault();
-      takeOver();
-      goTo(s.current.k + 1);
-    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-      e.preventDefault();
-      takeOver();
-      goTo(s.current.k - 1);
-    }
+  /** Clicking a step scrolls the page to it; the scroll then draws it. */
+  const jump = (j: number) => {
+    const w = wrap.current;
+    if (!w) return;
+    const travel = Math.max(1, w.offsetHeight - window.innerHeight);
+    window.scrollTo(0, layoutTop(w) + travel * holdOf(j));
   };
 
   useEffect(() => {
-    const st = s.current;
-    st.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const w = wrap.current;
+    const stage = root.current;
+    if (!w || !stage) return;
     paint(0);
 
-    const io = new IntersectionObserver(([en]) => (st.visible = en.isIntersecting), { threshold: 0.55 });
-    if (root.current) io.observe(root.current);
-
+    /* chase the scroll so a wheel notch glides instead of jumping */
+    let sp = -1;
     let last = performance.now();
-    let raf = 0;
-    const tick = (n: number) => {
-      const dt = Math.min(50, n - last);
-      last = n;
-      if (st.chase) {
-        const d = st.tp - st.p;
-        if (Math.abs(d) < 0.0008) {
-          paint(st.tp);
-          st.chase = false;
-          st.moving = false;
-          st.dwell = 0;
-        } else {
-          paint(st.p + d * (1 - Math.exp(-dt / 55)));
-        }
-      }
-      if (st.auto && st.visible && !st.moving && !st.dragging && !st.reduced) {
-        st.dwell += dt;
-        if (st.dwell >= DWELL) {
-          if (st.k < 6) animateTo((st.k + 1) / 6);
-          else st.auto = false;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
 
+    function tick() {
+      if (!w!.offsetParent) return;
+      const { y } = scrollFX();
+      const vh = window.innerHeight;
+      const travel = Math.max(1, w!.offsetHeight - vh);
+      const into = y - layoutTop(w!);
+
+      /* hold the section in the viewport while the wrapper scrolls past */
+      stage!.style.transform = `translate3d(0,${clamp(into, 0, travel).toFixed(2)}px,0)`;
+      const rel = -into;
+      const cover = Math.max(0, Math.min(vh, rel + w!.offsetHeight) - Math.max(0, rel)) / vh;
+      /* no tilt here at all: damp as soon as the section starts to cover the screen */
+      window.__skewDamp = Math.min(window.__skewDamp ?? 1, 1 - clamp(cover * 3));
+
+      const now = performance.now();
+      const dt = Math.min(64, now - last);
+      last = now;
+      const target = toPos(clamp(into / travel)) / 6;
+      sp = sp < 0 ? target : sp + (target - sp) * (1 - Math.exp(-dt / 110));
+      if (Math.abs(sp - s.current.p) > 0.00005) paint(sp);
+    }
+
+    tick();
+    const off = onScrollTick(tick);
+    window.addEventListener("resize", tick);
     return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-      cancelAnimationFrame(st.anim);
+      off();
+      window.removeEventListener("resize", tick);
+      window.__skewDamp = 1;
     };
-  }, [paint, animateTo]);
+  }, [paint]);
 
   const step = STEPS[k];
 
   return (
-    <section
-      id="process"
-      className="proc"
-      ref={root}
-      tabIndex={0}
-      aria-label="My design process"
-      onKeyDown={key}
-    >
+    <div className="proc-pin" ref={wrap}>
+    <section id="process" className="proc" ref={root} aria-label="My design process">
       <div className="proc-top rv">
         <h2 className="proj-h hs-h proc-title">
           <span className="clip">
@@ -261,11 +182,7 @@ export default function DesignProcess() {
         </div>
       </div>
 
-      <div
-        className="proc-bar"
-        ref={bar}
-        onPointerMove={hover}
-      >
+      <div className="proc-bar" ref={bar}>
         <div className="proc-line">
           <div className="proc-fill" ref={fill} />
         </div>
@@ -277,10 +194,7 @@ export default function DesignProcess() {
               className={`proc-stop${j < k ? " past" : ""}${j === k ? " on" : ""}`}
               style={{ left: `${(j / 6) * 100}%` }}
               aria-label={`Step ${j + 1}: ${x.name}`}
-              onClick={() => {
-                takeOver();
-                goTo(j);
-              }}
+              onClick={() => jump(j)}
             />
             <span className={`proc-lbl${j === k ? " on" : ""}`} style={{ left: `${(j / 6) * 100}%` }}>
               <b>{pad(j)}</b>
@@ -289,5 +203,6 @@ export default function DesignProcess() {
         ))}
       </div>
     </section>
+    </div>
   );
 }

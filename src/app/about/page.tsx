@@ -3,8 +3,45 @@ import { Band } from "@/components/Band";
 import { Footer } from "@/components/Footer";
 import DesignProcess from "@/components/DesignProcess";
 import ThoughtScroll from "@/components/ThoughtScroll";
+import HeroGrid from "@/components/HeroGrid";
 
 export const metadata: Metadata = { title: "About" };
+
+const TOOLKIT = [
+  {
+    title: "Practice",
+    mark: "dia",
+    area: "pr",
+    items: [
+      "UX Research",
+      "Sketching & Ideation",
+      "Wireframing & User Flows",
+      "Design Systems",
+      "Rapid Prototyping",
+      "Interaction & Motion",
+      "Industrial Design",
+      "CMF & Materials",
+    ],
+  },
+  {
+    title: "Tools",
+    mark: "dia",
+    area: "to",
+    items: ["Figma", "Framer", "Fusion 360", "Rhino", "Blender", "KeyShot", "Adobe CC"],
+  },
+  {
+    title: "AI + Experiments",
+    mark: "dia",
+    area: "ai",
+    items: ["Generative AI · Prompting", "AI-Assisted Design & Prototyping", "Rapid Concept Development"],
+  },
+  {
+    title: "Enough Code",
+    mark: "dia",
+    area: "co",
+    items: ["HTML / CSS", "AI-Assisted Development", "Interactive Web Prototyping"],
+  },
+];
 
 export default function AboutPage() {
   return (
@@ -13,6 +50,7 @@ export default function AboutPage() {
           line, blurb and marquee); only the wordmark differs. */}
       <section className="hero-home">
         <div className="hero-fold">
+          <HeroGrid align="left" />
           <div className="hero-top rv">
             <span>Portfolio © 2026</span>
             <span>Design with intent</span>
@@ -69,48 +107,30 @@ export default function AboutPage() {
       {/* DESIGN PROCESS — one viewport: a square refined into a circle */}
       <DesignProcess />
 
-      {/* TOOLKIT */}
-      <section id="toolkit">
-        <div className="kit rv-stg">
-          <div className="kit-col">
-            <h3>
-              Design<span>.</span>
-            </h3>
-            <ul>
-              <li>Figma</li>
-              <li>Framer</li>
-              <li>After Effects</li>
-              <li>Rive</li>
-              <li>Blender — basics</li>
-              <li>Procreate</li>
-            </ul>
-          </div>
-          <div className="kit-col">
-            <h3>
-              Practice<span>.</span>
-            </h3>
-            <ul>
-              <li>Design systems</li>
-              <li>Interaction &amp; motion</li>
-              <li>UX research</li>
-              <li>Rapid prototyping</li>
-              <li>Usability testing</li>
-              <li>Workshop facilitation</li>
-            </ul>
-          </div>
-          <div className="kit-col">
-            <h3>
-              Enough code<span>.</span>
-            </h3>
-            <ul>
-              <li>HTML / CSS</li>
-              <li>JavaScript — reading it</li>
-              <li>React — components</li>
-              <li>Tailwind</li>
-              <li>Git basics</li>
-              <li>Design tokens</li>
-            </ul>
-          </div>
+      {/* TOOLKIT — bento grid of four minimal boxes */}
+      <section id="toolkit" className="tk">
+        <h2 className="proj-h hs-h tk-h rv">
+          <span className="clip">
+            <span>Design toolkit.</span>
+          </span>
+        </h2>
+        <div className="tk-grid rv-stg">
+          {TOOLKIT.map((g) => (
+            <div className={`tk-box tk-${g.area}`} key={g.title}>
+              <div className="tk-top">
+                <span className="tk-title">
+                  <i className={`tk-mk ${g.mark}`} aria-hidden="true" />
+                  {g.title}
+                  <b className="tk-dot" aria-hidden="true" />
+                </span>
+              </div>
+              <ul>
+                {g.items.map((it) => (
+                  <li key={it}>{it}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
 

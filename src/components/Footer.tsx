@@ -54,7 +54,7 @@ export function Footer({
       </div>
       <div className="foot-row rv">
         {/* Copyright hard left, links hard right, on one shared baseline. */}
-        <div className="foot-note">© 2026 Swarali — Product Designer</div>
+        <div className="foot-note">© 2026 Swarali Satpute — All Rights Reserved.</div>
         <div className="foot-links">
           {links.map((l) =>
             l.internal === false ? (

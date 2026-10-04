@@ -46,6 +46,39 @@ export default function ThoughtScroll() {
     let sInto = 0;
     let last = performance.now();
 
+    /* Justified block: every line is sized so it spans exactly the block's
+       width. Measured, not hard-coded — the ratio differs per line and per
+       font load. offsetWidth is layout width, so the fade's scale() and the
+       page skew can't distort the measurement. */
+    const blk = block.current;
+    function fitLines() {
+      if (!blk) return;
+      const W = blk.clientWidth;
+      if (!W) return;
+      const natural = (el: HTMLElement) => {
+        el.style.fontSize = "100px";
+        el.style.width = "max-content";
+        const w = el.offsetWidth;
+        el.style.width = "";
+        return w;
+      };
+      const hero = copies[mid];
+      const hw = natural(hero);
+      hero.style.fontSize = "";
+      if (hw) blk.style.setProperty("--tpFs", `${((100 * W) / hw).toFixed(3)}px`);
+      [r1.current, r4.current].forEach((el) => {
+        if (!el) return;
+        const w = natural(el);
+        el.style.fontSize = w ? `${((100 * W) / w).toFixed(3)}px` : "";
+      });
+    }
+    fitLines();
+    document.fonts?.ready.then(fitLines);
+    const onResize = () => {
+      fitLines();
+      tick();
+    };
+
     function tick() {
       if (!w!.offsetParent) return;
       const { y } = scrollFX();
@@ -70,7 +103,7 @@ export default function ThoughtScroll() {
       /* no page tilt while this is pinned (same trick as the work rail) */
       const rel = layoutTop(w!) - y;
       const cover = Math.max(0, Math.min(vh, rel + w!.offsetHeight) - Math.max(0, rel)) / vh;
-      window.__skewDamp = 1 - clamp(cover);
+      window.__skewDamp = Math.min(window.__skewDamp ?? 1, 1 - clamp(cover));
 
       /* 1 · the stack folds into one word (0 → .5) */
       const e = easeInOut(clamp(p / 0.5));
@@ -125,10 +158,10 @@ export default function ThoughtScroll() {
 
     tick();
     const off = onScrollTick(tick);
-    window.addEventListener("resize", tick);
+    window.addEventListener("resize", onResize);
     return () => {
       off();
-      window.removeEventListener("resize", tick);
+      window.removeEventListener("resize", onResize);
       window.__skewDamp = 1;
     };
   }, []);
@@ -149,10 +182,10 @@ export default function ThoughtScroll() {
               </div>
             ))}
           </div>
-          <div className="tp-l3" ref={r3}>
-            <span>made</span>
+          <div className="tp-l4" ref={r4}>
+            <span className="tp-made">made</span>
+            <span className="tp-tang">tangible.</span>
           </div>
-          <div className="tp-l4" ref={r4}>tangible.</div>
         </div>
       </div>
     </div>

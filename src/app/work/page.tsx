@@ -3,6 +3,7 @@ import WorkDeck from "@/components/WorkDeck";
 import PhotoFallback from "@/components/PhotoFallback";
 import SketchWall from "@/components/SketchWall";
 import { Footer } from "@/components/Footer";
+import HeroGrid from "@/components/HeroGrid";
 
 export const metadata: Metadata = { title: "Work" };
 
@@ -11,6 +12,7 @@ export default function WorkPage() {
     <div className="page" data-page="work">
       {/* HERO */}
       <section className="hero-work">
+        <HeroGrid align="left" />
         <div className="hero-top rv">
           <span>Portfolio © 2026</span>
           <span>Design with intent</span>
@@ -23,18 +25,14 @@ export default function WorkPage() {
             </span>
           </h1>
         </div>
-        <div className="intro-row rv">
-          <div className="big">
-            <span className="clip">
-              <span>Some are held.</span>
-            </span>
-            <span className="clip">
-              <span>Some are felt.</span>
-            </span>
+        <div className="hero-row rv">
+          <div className="hero-role clip">
+            <span>Product Designer</span>
           </div>
-          <p>
-            Screens, objects, and the paper that came before both. Six projects and a sketchbook — arranged by how
-            you&apos;d encounter them, not by when I made them.
+          <p className="hero-blurb">
+            Some experiences are held. Others are felt.
+            <br />
+            I design both. <b className="star">✦</b>
           </p>
         </div>
       </section>

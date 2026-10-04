@@ -209,6 +209,11 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
       checkReveals();
       if (window.__deckTick) window.__deckTick();
+      /* Skew damping is voted on fresh every frame: each section that must
+         not tilt lowers it with Math.min, and the lowest vote is applied on
+         the next frame. Resetting here stops one section's "1" from
+         overwriting another section's "0". */
+      window.__skewDamp = 1;
       window.__scrollTicks?.forEach((fn) => fn());
       raf = requestAnimationFrame(tick);
     }
