@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { onScrollTick, scrollFX } from "@/lib/scrollfx";
 
 const SOCIALS = [
-  { label: "Behance", handle: "swarali_satpute", href: "https://www.behance.net/swarali_satpute" },
-  { label: "LinkedIn", handle: "swarali-satpute", href: "https://www.linkedin.com/in/swarali-satpute" },
+  { label: "Behance", handle: "swaralisatpute", href: "https://www.behance.net/swaralisatpute" },
+  { label: "LinkedIn", handle: "swarali-satpute", href: "https://www.linkedin.com/in/swarali-satpute/" },
 ];
 
 /** Fraction of the viewport the stage's top must pass before the copy reveals.

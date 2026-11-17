@@ -24,11 +24,11 @@ export function Footer({ links }: { links: FootLink[] }) {
           swarali.designworks@gmail.com
         </a>
         <div className="socials">
-          <a href="https://www.behance.net/swarali_satpute" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.behance.net/swaralisatpute" target="_blank" rel="noopener noreferrer">
             Behance <span>↗</span>
           </a>
-          <a href="https://www.instagram.com/swarali.designs" target="_blank" rel="noopener noreferrer">
-            Instagram <span>↗</span>
+          <a href="https://www.linkedin.com/in/swarali-satpute/" target="_blank" rel="noopener noreferrer">
+            LinkedIn <span>↗</span>
           </a>
         </div>
       </div>
