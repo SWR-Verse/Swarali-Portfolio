@@ -57,7 +57,7 @@ const PROJECTS: Project[] = [
  * reads as a tilt.
  *
  * Everything else is static markup. */
-export default function WorkRail() {
+export default function WorkRail({ title = "Selected work.", tag }: { title?: string; tag?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -89,9 +89,10 @@ export default function WorkRail() {
       <div className="hs-head">
         <h2 className="proj-h hs-h rv">
           <span className="clip">
-            <span>Selected work.</span>
+            <span>{title}</span>
           </span>
         </h2>
+        {tag && <span className="hs-tag rv">{tag}</span>}
       </div>
 
       <div className="hs-grid">

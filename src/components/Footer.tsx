@@ -2,31 +2,11 @@ import TransitionLink from "./TransitionLink";
 
 type FootLink = { href: string; label: string; internal?: boolean };
 
-export function Footer({
-  links,
-  next,
-}: {
-  links: FootLink[];
-  next?: { lines: [string, string]; ctaLabel: string; ctaHref: string };
-}) {
+/** One footer for every page. Pages pass only their nav links. */
+export function Footer({ links }: { links: FootLink[] }) {
   return (
     <footer className="site-foot">
-      {next && (
-        <div className="next rv">
-          <h3>
-            <span className="clip">
-              <span>{next.lines[0]}</span>
-            </span>
-            <span className="clip">
-              <span>{next.lines[1]}</span>
-            </span>
-          </h3>
-          <TransitionLink className="cta" href={next.ctaHref}>
-            {next.ctaLabel} <span>↗</span>
-          </TransitionLink>
-        </div>
-      )}
-      <h2 className="foot-h rv" style={next ? { marginTop: "clamp(60px,9vh,110px)" } : undefined}>
+      <h2 className="foot-h rv">
         <span className="clip">
           <span>So&hellip;</span>
         </span>

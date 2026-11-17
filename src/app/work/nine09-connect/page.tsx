@@ -498,7 +498,6 @@ export default function Nine09CasePage() {
           { href: "/about", label: "About" },
           { href: "/contact", label: "Contact" },
         ]}
-        next={{ lines: ["Want the", "whole story?"], ctaLabel: "Get in touch", ctaHref: "/contact" }}
       />
     </div>
   );

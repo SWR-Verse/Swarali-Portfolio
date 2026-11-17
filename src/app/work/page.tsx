@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WorkDeck from "@/components/WorkDeck";
+import WorkRail from "@/components/WorkRail";
 import PhotoFallback from "@/components/PhotoFallback";
 import SketchWall from "@/components/SketchWall";
 import { Footer } from "@/components/Footer";
@@ -37,36 +37,20 @@ export default function WorkPage() {
         </div>
       </section>
 
-      {/* 01 — SCREEN WORK */}
+      {/* 01 — SCREEN WORK: the same card grid as "Selected work" on home */}
       <section id="screen">
-        <div className="chap">
-          <h2 className="rv">
-            <span className="clip">
-              <span>Things</span>
-            </span>
-            <span className="clip">
-              <span>you use.</span>
-            </span>
-          </h2>
-          <div className="count rv">Four projects · 2023–2026</div>
-        </div>
-        <WorkDeck />
+        <WorkRail title="Interfaces &amp; Systems." tag="UI/UX Projects" />
       </section>
 
-      {/* 02 — PHYSICAL WORK, paper band */}
-      <section id="objects" className="paperband">
-        <div className="chap">
-          <h2 className="rv">
+      {/* 02 — PHYSICAL WORK, in the site's dark language */}
+      <section id="objects" className="objects">
+        <div className="hs-head">
+          <h2 className="proj-h hs-h rv">
             <span className="clip">
-              <span>Things</span>
-            </span>
-            <span className="clip">
-              <span>you hold.</span>
+              <span>Objects &amp; Products.</span>
             </span>
           </h2>
-          <div className="count rv" style={{ color: "var(--paper-muted)" }}>
-            Two objects · 2021–2023
-          </div>
+          <span className="hs-tag rv">Industrial Design Projects</span>
         </div>
         <div className="pgrid">
           <div className="pcard rv">
@@ -82,20 +66,6 @@ export default function WorkPage() {
                 A desk lamp that folds flat. One extruded aluminium arm, one diffuser, no visible fasteners — the
                 whole thing assembles in under a minute and ships in an envelope.
               </p>
-              <div className="spec">
-                <div>
-                  <span className="k">Materials</span>
-                  <span className="v">Anodised aluminium, cast acrylic</span>
-                </div>
-                <div>
-                  <span className="k">Process</span>
-                  <span className="v">Foam models → SLA → tooling</span>
-                </div>
-                <div>
-                  <span className="k">Year</span>
-                  <span className="v">2023</span>
-                </div>
-              </div>
             </div>
           </div>
           <div className="pcard rv">
@@ -111,20 +81,6 @@ export default function WorkPage() {
                 A gravity water purifier for homes without steady power or pressure. Designed around the filter&apos;s
                 real service interval, so replacing it is a thirty-second job with no tools and no manual.
               </p>
-              <div className="spec">
-                <div>
-                  <span className="k">Materials</span>
-                  <span className="v">Moulded ABS, ceramic core</span>
-                </div>
-                <div>
-                  <span className="k">Process</span>
-                  <span className="v">Field study → CAD → user testing</span>
-                </div>
-                <div>
-                  <span className="k">Year</span>
-                  <span className="v">2021</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -132,20 +88,16 @@ export default function WorkPage() {
 
       {/* 03 — SKETCHBOOK */}
       <section id="sketch">
-        <div className="chap">
-          <h2 className="rv">
+        <div className="hs-head">
+          <h2 className="proj-h hs-h rv">
             <span className="clip">
-              <span>Before</span>
-            </span>
-            <span className="clip">
-              <span>any of it.</span>
+              <span>It starts here.</span>
             </span>
           </h2>
-          <div className="count rv">Sketchbook · ongoing</div>
+          <span className="hs-tag rv">Notes from the Sketchbook</span>
         </div>
         <p className="sk-lede rv">
-          Every project on this page started here. Sketching is how I think — fast, wrong, and cheap to throw away.
-          Form, proportion, grip, then the parts nobody photographs.
+          Sketching is how I think. It&rsquo;s where ideas take their first breath before finding the final thing.
         </p>
         <SketchWall />
       </section>
@@ -156,7 +108,6 @@ export default function WorkPage() {
           { href: "/about", label: "About" },
           { href: "/contact", label: "Contact" },
         ]}
-        next={{ lines: ["Want the", "long version?"], ctaLabel: "Get in touch", ctaHref: "/contact" }}
       />
     </div>
   );

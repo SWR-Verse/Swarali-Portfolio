@@ -1888,3 +1888,120 @@ form.gone{display:none}
 
 /* Copyright line: was --dim and barely legible on the dark footer. */
 .foot-note{color:var(--muted)}
+
+/* ============================================================
+   WORK — "Things you hold." in the dark language
+   ============================================================
+   Was a cream paper band. Now it sits on the page background like
+   "Selected work": the same 18px frames, hairline border, faint wash,
+   accent glow on hover, small-caps labels and soft dividers. */
+#objects .pcard .shot{border-radius:18px;border:1px solid var(--line);
+  background:linear-gradient(158deg,rgba(237,239,242,.075) 0%,rgba(237,239,242,.018) 46%,rgba(237,239,242,.003) 72%),#060D17;
+  margin-bottom:26px;
+  transition:border-color .55s,box-shadow .55s,transform .6s cubic-bezier(.16,1,.3,1)}
+#objects .pcard:hover .shot{transform:translateY(-6px);
+  border-color:color-mix(in srgb,var(--accent) 42%,transparent);
+  box-shadow:0 0 56px -14px color-mix(in srgb,var(--accent) 30%,transparent)}
+#objects .pcard .shot img{transition:transform .8s cubic-bezier(.16,1,.3,1)}
+#objects .pcard:hover .shot img{transform:scale(1.045)}
+#objects .pcard .shot .word{color:var(--dim)}
+#objects .pcard .shot .tag{color:var(--dim)}
+#objects .pcard .idx{font-family:var(--body-font);font-size:.64rem;font-weight:600;
+  letter-spacing:.16em;color:var(--dim);line-height:1}
+#objects .pcard h3{color:var(--ink);font-size:clamp(1.6rem,2.8vw,2.6rem);margin-top:12px;transition:color .4s}
+#objects .pcard:hover h3{color:var(--accent)}
+#objects .pcard .lede{color:var(--muted);font-size:.92rem;line-height:1.7;max-width:52ch}
+#objects .spec{border-top:1px solid var(--line)}
+#objects .spec div{border-bottom:1px solid rgba(237,239,242,.05)}
+#objects .spec .k{color:rgba(169,176,192,.62)}
+#objects .spec .v{color:var(--muted)}
+@media(prefers-reduced-motion:reduce){
+  #objects .pcard:hover .shot,#objects .pcard:hover .shot img{transform:none}
+}
+/* The section above already pads its own bottom for the card stagger, so a full
+   section top here doubled the gap. */
+#objects{padding-top:clamp(40px,7vh,90px)}
+
+/* ============================================================
+   WORK — a quiet colour per chapter
+   ============================================================
+   Interfaces & Systems sits in a cool blue wash (the same blue as the
+   card glow), Objects & Products in a warm amber one (the accent). Very
+   low alpha and faded at top and bottom, so neither reads as a band with
+   an edge against the page's drifting sheen. */
+#screen,#objects{isolation:isolate}
+#screen::before,#objects::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);
+          mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%)}
+#screen::before{background:
+  radial-gradient(75% 65% at 24% 48%,rgba(58,112,248,.20),transparent 72%),
+  linear-gradient(180deg,rgba(58,112,248,.06),rgba(58,112,248,.06))}
+#objects::before{background:
+  radial-gradient(75% 65% at 76% 50%,rgba(242,167,65,.13),transparent 72%),
+  linear-gradient(180deg,rgba(242,167,65,.045),rgba(242,167,65,.045))}
+
+/* ============================================================
+   BEFORE ANY OF IT — taped moodboard
+   ============================================================
+   Eight prints laid straight, overlapping, each held by a strip of clear
+   tape. The board has a fixed aspect so the composition scales as one
+   piece; every print is placed in % of it (see SketchWall.tsx). */
+.board{position:relative;width:100%;aspect-ratio:1000/600;margin-top:clamp(10px,2vh,24px)}
+.snap{position:absolute;margin:0;left:var(--x);top:var(--y);width:var(--w);z-index:var(--z);
+  transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .9s,filter .55s}
+.snap:hover{z-index:20;transform:translateY(-6px) rotate(-.4deg)}
+.snap-img{position:relative;aspect-ratio:var(--ar);overflow:hidden;background:#0B1422;
+  /* Prints sit flat on the page: a short, hard shadow down and to the left,
+     the way paper casts it under a single overhead light. */
+  box-shadow:-7px 9px 10px -2px rgba(0,0,0,.55),-2px 3px 3px rgba(0,0,0,.35);
+  transition:box-shadow .55s}
+.snap:hover .snap-img{box-shadow:-12px 18px 26px -6px rgba(0,0,0,.6),-3px 5px 6px rgba(0,0,0,.35)}
+.snap-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+/* No photo yet: a sheet of sketch paper with the name pencilled on. */
+.snap-ph{display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  text-align:center;padding:12px;
+  background:
+    linear-gradient(rgba(60,70,90,.07) 1px,transparent 1px) 0 0/16px 16px,
+    linear-gradient(90deg,rgba(60,70,90,.07) 1px,transparent 1px) 0 0/16px 16px,
+    linear-gradient(165deg,#F1EEE7,#E3DED3)}
+.snap.empty .snap-ph{display:flex}
+.snap-ph .n{font-family:var(--disp);text-transform:uppercase;letter-spacing:.01em;
+  font-size:clamp(1rem,2.2vw,2.2rem);color:rgba(30,34,44,.32);line-height:1}
+.snap-ph .f{font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:clamp(.42rem,.6vw,.56rem);color:rgba(30,34,44,.38)}
+
+/* ---- the tape ----
+   Frosted, slightly crinkled, with torn ends. Three layers: a cool milky body,
+   diagonal crease highlights, and a fine noise so it reads as film rather than
+   as a flat grey rectangle. Torn ends come from the zig-zag clip-path. */
+.tape{position:absolute;z-index:2;top:0;left:var(--ta);width:var(--tw);min-width:44px;
+  aspect-ratio:2.6/1;max-height:58px;
+  transform:translate(-50%,-48%) rotate(var(--tr));
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E"),
+    linear-gradient(104deg,transparent 0 18%,rgba(255,255,255,.38) 21%,transparent 26% 52%,rgba(255,255,255,.28) 56%,transparent 61% 78%,rgba(255,255,255,.34) 82%,transparent 86%),
+    linear-gradient(180deg,rgba(238,242,248,.70),rgba(212,218,228,.52) 55%,rgba(238,242,248,.66));
+  -webkit-backdrop-filter:blur(1.5px) saturate(.85);backdrop-filter:blur(1.5px) saturate(.85);
+  box-shadow:0 1px 2px rgba(0,0,0,.18);
+  clip-path:polygon(
+    2% 0,98% 0,100% 8%,97% 17%,100% 27%,97% 37%,100% 48%,97% 58%,100% 68%,97% 78%,100% 89%,98% 100%,
+    2% 100%,0 91%,3% 81%,0 70%,3% 60%,0 50%,3% 40%,0 29%,3% 19%,0 9%);
+  pointer-events:none}
+
+/* Phones: the collage would shrink each print to a thumbnail, so it opens out
+   into a two-up grid. Prints keep their ratio, tape and shadow. */
+@media(max-width:760px){
+  .board{aspect-ratio:auto;display:grid;grid-template-columns:1fr 1fr;gap:34px 16px;padding-top:14px}
+  .snap{position:relative;left:auto;top:auto;width:auto;z-index:auto}
+  .snap:nth-child(4),.snap:nth-child(5){grid-column:1 / -1}
+}
+@media(prefers-reduced-motion:reduce){
+  .snap,.snap:hover{transform:none}
+}
+
+/* Section heading with a label on the right ("UI/UX Projects" etc.).
+   Shares the heading's baseline; the label uses the site's small-caps meta
+   style so it reads as a caption to the heading, not a second title. */
+.hs-head{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap}
+.hs-tag{color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;white-space:nowrap}
+#sketch .hs-head{margin-bottom:clamp(18px,3vh,30px)}
